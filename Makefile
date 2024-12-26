@@ -6,6 +6,7 @@ NAME = si
 OUTDIR = .build
 OBJ = \
       $(OUTDIR)/main.o \
+      $(OUTDIR)/img.o \
 
 all: $(NAME)
 

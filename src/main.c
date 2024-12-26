@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "img.h"
+
 Display *dpy;
 Window w;
 GC gc;
@@ -39,13 +41,13 @@ main(void)
 {
 	init_client(200, 100);
 
-	XImage *img = XCreateImage(dpy, CopyFromParent, DefaultDepth(dpy, scr), ZPixmap, 0, NULL, 100, 100, 32, 0);
-	img->data = calloc(img->bytes_per_line * img->height, 1);
-	XInitImage(img);
+	struct Image tmp = {
+		.width = 100,
+		.height = 100,
+		.data = NULL,
+	};
 
-	for (int i = 0; i < 100; i++) {
-		XPutPixel(img, i, 25, 0xFFFF00);
-	}
+	XImage *img = img_to_ximg(&tmp);
 
 	XPutImage(dpy, w, gc, img, 0, 0, 0, 0, 100, 50);
 
