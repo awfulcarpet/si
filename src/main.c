@@ -1,31 +1,42 @@
+#include <X11/X.h>
 #include <X11/Xlib.h>
 #include <assert.h>
 
 Display *dpy;
 Window w;
+GC gc;
+XEvent e;
 
 void
-init(void)
+init_client(int width, int height)
 {
 	dpy = XOpenDisplay(NULL);
 	assert(dpy);
 
-	int blackColor = BlackPixel(dpy, DefaultScreen(dpy));
+	int black = BlackPixel(dpy, DefaultScreen(dpy));
+	int white = WhitePixel(dpy, DefaultScreen(dpy));
 
 	w = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), 0, 0,
-	100, 100, 0, blackColor, blackColor);
-
+		width, height, 0, black, black);
 	XSelectInput(dpy, w, StructureNotifyMask | KeyPressMask);
 
+	gc = XCreateGC(dpy, w, 0, NULL);
+	XSetForeground(dpy, gc, white);
+
+
 	XMapWindow(dpy, w);
+
+	while (e.type != MapNotify) XNextEvent(dpy, &e);
 }
 
 int
 main(void)
 {
-	init();
+	init_client(200, 100);
 
-	XEvent e;
+	XDrawLine(dpy, w, gc, 10, 60, 180, 20);
+	XFlush(dpy);
+
 	while (XNextEvent(dpy, &e) == 0);
 
 	XUnmapWindow(dpy, w);
