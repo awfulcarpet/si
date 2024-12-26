@@ -3,6 +3,7 @@
 #include <X11/Xutil.h>
 #include <assert.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "img.h"
@@ -37,25 +38,25 @@ init_client(int width, int height)
 }
 
 int
-main(void)
+main(int argc, char **argv)
 {
-	init_client(200, 100);
+	if (argc < 2) {
+		fprintf(stderr, "please provide image path\n");
+		return 1;
+	}
 
-	struct Image tmp = {
-		.width = 100,
-		.height = 100,
-		.data = NULL,
-	};
+	struct Image *img = read_png(argv[1]);
 
-	XImage *img = img_to_ximg(&tmp);
+	init_client(img->width, img->height);
 
-	XPutImage(dpy, w, gc, img, 0, 0, 0, 0, 100, 50);
+	XImage *ximg = img_to_ximg(img);
 
+	XPutImage(dpy, w, gc, ximg, 0, 0, 0, 0, ximg->width, ximg->height);
 
 	XSync(dpy, False);
 	while (XNextEvent(dpy, &e) == 0);
 
-	XDestroyImage(img);
+	XDestroyImage(ximg);
 	XUnmapWindow(dpy, w);
 	XDestroyWindow(dpy, w);
 	XCloseDisplay(dpy);

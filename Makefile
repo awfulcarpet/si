@@ -1,17 +1,18 @@
 WARNING = -Wall -Wextra -Wpedantic -Wno-unused-result -Werror
-CFLAGS = -std=c99 -O0 $(WARNING)
-LDLIBS = -lX11
+CFLAGS = -std=c99 -O0 $(WARNING) -ggdb
+LDLIBS = -lX11 -lpng
 
 NAME = si
 OUTDIR = .build
 OBJ = \
       $(OUTDIR)/main.o \
       $(OUTDIR)/img.o \
+      $(OUTDIR)/png.o \
 
 all: $(NAME)
 
 run: $(NAME)
-	$(OUTDIR)/$(NAME)
+	$(OUTDIR)/$(NAME) test.png
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(OUTDIR)

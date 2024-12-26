@@ -8,3 +8,4 @@ struct Image {
 };
 
 XImage * img_to_ximg(struct Image *img);
+struct Image * read_png(char *filename);
