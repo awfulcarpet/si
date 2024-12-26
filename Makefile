@@ -12,7 +12,7 @@ OBJ = \
 all: $(NAME)
 
 run: $(NAME)
-	$(OUTDIR)/$(NAME) test.png
+	$(OUTDIR)/$(NAME) res/test.png
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(OUTDIR)
