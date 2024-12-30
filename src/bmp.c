@@ -72,15 +72,13 @@ read_pixels(FILE *f, struct BMP *bmp)
 	uint32_t width = 0;
 	uint32_t idx = 0;
 	for (uint32_t i = 0; i < bmp->size; i += 3) {
-		bmp->data[idx++] = buf[i + 2] << 16 | buf[i + 1] << 8 | buf[i];
-		printf("%02x%02x%02x ", buf[i], buf[i+1], buf[i+2]);
+		bmp->data[(4 - idx / bmp->width) * bmp->width + idx % bmp->width] = buf[i + 2] << 16 | buf[i + 1] << 8 | buf[i];
+		idx++;
 
 		if (++width % bmp->width == 0) {
 			i += bmp->width % 4;
-			printf("\n");
 		}
 	}
-	printf("\n");
 }
 
 struct Image *
@@ -94,15 +92,7 @@ read_bmp(char *filename)
 	}
 
 	struct BMP *bmp = parse_header(f);
-	printf("%d\n", bmp->size);
-	printf("%02x\n", bmp->offset);
-	printf("%d %d\n", bmp->width, bmp->height);
 	read_pixels(f, bmp);
-	for (uint32_t i = 0; i < bmp->width * bmp->height; i++) {
-		printf("%06x ", bmp->data[i]);
-		if ((i + 1)% 5 == 0)
-			printf("\n");
-	}
 
 
 	struct Image *img = calloc(1, sizeof(struct Image));
