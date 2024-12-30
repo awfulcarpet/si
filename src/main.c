@@ -20,10 +20,15 @@ init_client(int width, int height)
 	dpy = XOpenDisplay(NULL);
 	assert(dpy);
 
+	scr = DefaultScreen(dpy);
+
 	int black = BlackPixel(dpy, DefaultScreen(dpy));
 	int white = WhitePixel(dpy, DefaultScreen(dpy));
 
-	w = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), 0, 0,
+	int mid_x = DisplayWidth(dpy, scr) / 2 - width / 2;
+	int mid_y = DisplayHeight(dpy, scr) / 2 - height / 2;
+
+	w = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), mid_x, mid_y,
 		width, height, 0, black, black);
 	XSelectInput(dpy, w, StructureNotifyMask | KeyPressMask | ExposureMask);
 
@@ -38,7 +43,6 @@ init_client(int width, int height)
 	gc = XCreateGC(dpy, w, 0, NULL);
 	XSetForeground(dpy, gc, white);
 
-	scr = DefaultScreen(dpy);
 
 	XMapWindow(dpy, w);
 
