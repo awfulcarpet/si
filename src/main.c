@@ -25,7 +25,7 @@ init_client(int width, int height)
 
 	w = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), 0, 0,
 		width, height, 0, black, black);
-	XSelectInput(dpy, w, StructureNotifyMask | KeyPressMask);
+	XSelectInput(dpy, w, StructureNotifyMask | KeyPressMask | ExposureMask);
 
 	gc = XCreateGC(dpy, w, 0, NULL);
 	XSetForeground(dpy, gc, white);
@@ -54,7 +54,10 @@ main(int argc, char **argv)
 	XPutImage(dpy, w, gc, ximg, 0, 0, 0, 0, ximg->width, ximg->height);
 
 	XSync(dpy, False);
-	while (XNextEvent(dpy, &e) == 0);
+	while (XNextEvent(dpy, &e) == 0) {
+		if (e.type == Expose)
+			XPutImage(dpy, w, gc, ximg, 0, 0, 0, 0, ximg->width, ximg->height);
+	}
 
 	XDestroyImage(ximg);
 	XUnmapWindow(dpy, w);
