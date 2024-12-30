@@ -8,11 +8,12 @@ OBJ = \
       $(OUTDIR)/main.o \
       $(OUTDIR)/img.o \
       $(OUTDIR)/png.o \
+      $(OUTDIR)/bmp.o \
 
 all: $(NAME)
 
 run: $(NAME)
-	$(OUTDIR)/$(NAME) res/test.png
+	$(OUTDIR)/$(NAME) res/smiley.bmp
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(OUTDIR)

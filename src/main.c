@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "img.h"
 
@@ -57,7 +58,27 @@ main(int argc, char **argv)
 		return 1;
 	}
 
-	struct Image *img = read_png(argv[1]);
+	int i = 0;
+	for (i = 0; argv[1][i] != '\0'; i++) {
+		if (argv[1][i] == '.')
+			break;
+	}
+
+	struct Image *img = NULL;
+
+	/* TODO: don't differentiate with file extensions */
+	if (!strcmp(&argv[1][i], ".png")) {
+		img = read_png(argv[1]);
+	}
+
+	if (!strcmp(&argv[1][i], ".bmp")) {
+		img = read_bmp(argv[1]);
+	}
+
+	if (img == NULL) {
+		fprintf(stderr, "file format %s not supported\n", &argv[1][i]);
+		exit(1);
+	}
 
 	init_client(img->width, img->height);
 
