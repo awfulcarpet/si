@@ -27,6 +27,14 @@ init_client(int width, int height)
 		width, height, 0, black, black);
 	XSelectInput(dpy, w, StructureNotifyMask | KeyPressMask | ExposureMask);
 
+	XSizeHints hints = {
+		.flags = PMaxSize,
+		.max_width = width,
+		.max_height = height,
+	};
+
+	XSetNormalHints(dpy, w, &hints);
+
 	gc = XCreateGC(dpy, w, 0, NULL);
 	XSetForeground(dpy, gc, white);
 
